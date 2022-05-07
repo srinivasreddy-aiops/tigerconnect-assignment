@@ -1,0 +1,787 @@
+srinivass-MacBook-Pro:tigerconnect-assignment srinivasreddy$ terraform validate
+╷
+│ Warning: Quoted references are deprecated
+│ 
+│   on ecs-service.tf line 57, in resource "aws_ecs_service" "tigerconnect-ecs-service":
+│   57:   depends_on      = ["aws_alb_listener.alb-listener"]
+│ 
+│ In this context, references are expected literally rather than in quotes. Terraform 0.11 and earlier required quotes, but quoted references are now deprecated and will be
+│ removed in a future version of Terraform. Remove the quotes surrounding this reference to silence this warning.
+╵
+╷
+│ Warning: Version constraints inside provider configuration blocks are deprecated
+│ 
+│   on main.tf line 3, in provider "aws":
+│    3:   version = "~> 2.54"
+│ 
+│ Terraform 0.13 and earlier allowed provider version constraints inside the provider configuration block, but that is now deprecated and will be removed in a future version of
+│ Terraform. To silence this warning, move the provider version constraint into the required_providers block.
+╵
+╷
+│ Warning: using template_file as a resource is deprecated; consider using the data source instead
+│ 
+│   with template_file.demo-template,
+│   on templates.tf line 1, in resource "template_file" "demo-template":
+│    1: resource "template_file" "demo-template" {
+│ 
+╵
+Success! The configuration is valid, but there were some validation warnings as shown above.
+
+srinivass-MacBook-Pro:tigerconnect-assignment srinivasreddy$ terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_alb.ecs-load-balancer will be created
+  + resource "aws_alb" "ecs-load-balancer" {
+      + arn                        = (known after apply)
+      + arn_suffix                 = (known after apply)
+      + dns_name                   = (known after apply)
+      + drop_invalid_header_fields = false
+      + enable_deletion_protection = false
+      + enable_http2               = true
+      + id                         = (known after apply)
+      + idle_timeout               = 60
+      + internal                   = (known after apply)
+      + ip_address_type            = (known after apply)
+      + load_balancer_type         = "application"
+      + name                       = "tigerconnect-ecs-load-balancer"
+      + security_groups            = (known after apply)
+      + subnets                    = (known after apply)
+      + vpc_id                     = (known after apply)
+      + zone_id                    = (known after apply)
+
+      + subnet_mapping {
+          + allocation_id = (known after apply)
+          + subnet_id     = (known after apply)
+        }
+    }
+
+  # aws_alb_listener.alb-listener will be created
+  + resource "aws_alb_listener" "alb-listener" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + load_balancer_arn = (known after apply)
+      + port              = 80
+      + protocol          = "HTTP"
+      + ssl_policy        = (known after apply)
+
+      + default_action {
+          + order            = (known after apply)
+          + target_group_arn = (known after apply)
+          + type             = "forward"
+        }
+    }
+
+  # aws_alb_target_group.ecs-target_group will be created
+  + resource "aws_alb_target_group" "ecs-target_group" {
+      + arn                                = (known after apply)
+      + arn_suffix                         = (known after apply)
+      + deregistration_delay               = 300
+      + id                                 = (known after apply)
+      + lambda_multi_value_headers_enabled = false
+      + load_balancing_algorithm_type      = (known after apply)
+      + name                               = "tigerconnect-ecs-targetgroup"
+      + port                               = 80
+      + protocol                           = "HTTP"
+      + proxy_protocol_v2                  = false
+      + slow_start                         = 0
+      + target_type                        = "instance"
+      + vpc_id                             = (known after apply)
+
+      + health_check {
+          + enabled             = true
+          + healthy_threshold   = 5
+          + interval            = 30
+          + matcher             = "200"
+          + path                = "/"
+          + port                = "traffic-port"
+          + protocol            = "HTTP"
+          + timeout             = 5
+          + unhealthy_threshold = 2
+        }
+
+      + stickiness {
+          + cookie_duration = (known after apply)
+          + enabled         = (known after apply)
+          + type            = (known after apply)
+        }
+    }
+
+  # aws_db_instance.rds will be created
+  + resource "aws_db_instance" "rds" {
+      + address                               = (known after apply)
+      + allocated_storage                     = 20
+      + apply_immediately                     = (known after apply)
+      + arn                                   = (known after apply)
+      + auto_minor_version_upgrade            = true
+      + availability_zone                     = (known after apply)
+      + backup_retention_period               = (known after apply)
+      + backup_window                         = (known after apply)
+      + ca_cert_identifier                    = (known after apply)
+      + character_set_name                    = (known after apply)
+      + copy_tags_to_snapshot                 = false
+      + db_subnet_group_name                  = (known after apply)
+      + delete_automated_backups              = true
+      + endpoint                              = (known after apply)
+      + engine                                = "mysql"
+      + engine_version                        = "8.0.17"
+      + hosted_zone_id                        = (known after apply)
+      + id                                    = (known after apply)
+      + identifier                            = "tigerconnect-database"
+      + identifier_prefix                     = (known after apply)
+      + instance_class                        = "db.t3.micro"
+      + kms_key_id                            = (known after apply)
+      + license_model                         = (known after apply)
+      + maintenance_window                    = (known after apply)
+      + monitoring_interval                   = 0
+      + monitoring_role_arn                   = (known after apply)
+      + multi_az                              = (known after apply)
+      + name                                  = "tigerconnect-DB"
+      + option_group_name                     = (known after apply)
+      + parameter_group_name                  = (known after apply)
+      + password                              = (sensitive value)
+      + performance_insights_enabled          = false
+      + performance_insights_kms_key_id       = (known after apply)
+      + performance_insights_retention_period = (known after apply)
+      + port                                  = (known after apply)
+      + publicly_accessible                   = false
+      + replicas                              = (known after apply)
+      + resource_id                           = (known after apply)
+      + skip_final_snapshot                   = true
+      + status                                = (known after apply)
+      + storage_type                          = (known after apply)
+      + tags                                  = {
+          + "Name"      = "tigerconnect-DB"
+          + "Terraform" = "true"
+        }
+      + timezone                              = (known after apply)
+      + username                              = "admin"
+      + vpc_security_group_ids                = (known after apply)
+    }
+
+  # aws_db_subnet_group.rds_subnet_group will be created
+  + resource "aws_db_subnet_group" "rds_subnet_group" {
+      + arn         = (known after apply)
+      + description = "RDS subnet group"
+      + id          = (known after apply)
+      + name        = "rds-subnet-group"
+      + name_prefix = (known after apply)
+      + subnet_ids  = (known after apply)
+      + tags        = {
+          + "Name"      = "RDS-subnet-group"
+          + "Terraform" = "true"
+        }
+    }
+
+  # aws_ecs_cluster.tigerconnect-ecs-cluster will be created
+  + resource "aws_ecs_cluster" "tigerconnect-ecs-cluster" {
+      + arn  = (known after apply)
+      + id   = (known after apply)
+      + name = "tigerconnect-ecs-cluster"
+
+      + setting {
+          + name  = (known after apply)
+          + value = (known after apply)
+        }
+    }
+
+  # aws_ecs_service.tigerconnect-ecs-service will be created
+  + resource "aws_ecs_service" "tigerconnect-ecs-service" {
+      + cluster                            = (known after apply)
+      + deployment_maximum_percent         = 200
+      + deployment_minimum_healthy_percent = 100
+      + desired_count                      = 1
+      + enable_ecs_managed_tags            = false
+      + iam_role                           = (known after apply)
+      + id                                 = (known after apply)
+      + launch_type                        = (known after apply)
+      + name                               = "tigerconnect-ecs-service"
+      + platform_version                   = (known after apply)
+      + scheduling_strategy                = "REPLICA"
+      + task_definition                    = (known after apply)
+
+      + load_balancer {
+          + container_name   = "wordpress-app"
+          + container_port   = 80
+          + target_group_arn = (known after apply)
+        }
+
+      + placement_strategy {
+          + field = (known after apply)
+          + type  = (known after apply)
+        }
+    }
+
+  # aws_ecs_task_definition.demo-sample-definition will be created
+  + resource "aws_ecs_task_definition" "demo-sample-definition" {
+      + arn                   = (known after apply)
+      + container_definitions = (known after apply)
+      + family                = "demo-sample-definition"
+      + id                    = (known after apply)
+      + network_mode          = (known after apply)
+      + revision              = (known after apply)
+
+      + volume {
+          + host_path = "/mnt/efs/wordpress"
+          + name      = "efs-wordpress-data"
+        }
+    }
+
+  # aws_efs_file_system.wordpress-data will be created
+  + resource "aws_efs_file_system" "wordpress-data" {
+      + arn              = (known after apply)
+      + creation_token   = "es-persistent-data"
+      + dns_name         = (known after apply)
+      + encrypted        = (known after apply)
+      + id               = (known after apply)
+      + kms_key_id       = (known after apply)
+      + performance_mode = "generalPurpose"
+      + reference_name   = (known after apply)
+      + tags             = {
+          + "Name" = "wordpress-data"
+        }
+      + throughput_mode  = "bursting"
+    }
+
+  # aws_efs_mount_target.wordpress[0] will be created
+  + resource "aws_efs_mount_target" "wordpress" {
+      + availability_zone_id   = (known after apply)
+      + availability_zone_name = (known after apply)
+      + dns_name               = (known after apply)
+      + file_system_arn        = (known after apply)
+      + file_system_id         = (known after apply)
+      + id                     = (known after apply)
+      + ip_address             = (known after apply)
+      + mount_target_dns_name  = (known after apply)
+      + network_interface_id   = (known after apply)
+      + owner_id               = (known after apply)
+      + security_groups        = (known after apply)
+      + subnet_id              = (known after apply)
+    }
+
+  # aws_efs_mount_target.wordpress[1] will be created
+  + resource "aws_efs_mount_target" "wordpress" {
+      + availability_zone_id   = (known after apply)
+      + availability_zone_name = (known after apply)
+      + dns_name               = (known after apply)
+      + file_system_arn        = (known after apply)
+      + file_system_id         = (known after apply)
+      + id                     = (known after apply)
+      + ip_address             = (known after apply)
+      + mount_target_dns_name  = (known after apply)
+      + network_interface_id   = (known after apply)
+      + owner_id               = (known after apply)
+      + security_groups        = (known after apply)
+      + subnet_id              = (known after apply)
+    }
+
+  # aws_iam_role.ecs-service-role will be created
+  + resource "aws_iam_role" "ecs-service-role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ecs.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "ecs-service-role"
+      + path                  = "/"
+      + unique_id             = (known after apply)
+    }
+
+  # aws_iam_role_policy_attachment.ecs-service-role-attachment will be created
+  + resource "aws_iam_role_policy_attachment" "ecs-service-role-attachment" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+      + role       = "ecs-service-role"
+    }
+
+  # aws_route53_record.tigerconnect-ns will be created
+  + resource "aws_route53_record" "tigerconnect-ns" {
+      + allow_overwrite = (known after apply)
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = "tigerconnect.com"
+      + records         = (known after apply)
+      + ttl             = 300
+      + type            = "NS"
+      + zone_id         = (known after apply)
+    }
+
+  # aws_route53_record.tigerconnect_alb will be created
+  + resource "aws_route53_record" "tigerconnect_alb" {
+      + allow_overwrite = (known after apply)
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = "tigerconnect.com"
+      + records         = (known after apply)
+      + ttl             = 300
+      + type            = "A"
+      + zone_id         = (known after apply)
+    }
+
+  # aws_route53_zone.tigerconnect will be created
+  + resource "aws_route53_zone" "tigerconnect" {
+      + comment       = "Managed by Terraform"
+      + force_destroy = true
+      + id            = (known after apply)
+      + name          = "tigerconnect.com"
+      + name_servers  = (known after apply)
+      + tags          = {
+          + "Name"      = "tigerconnect-zone"
+          + "Terraform" = "true"
+        }
+      + vpc_id        = (known after apply)
+      + vpc_region    = (known after apply)
+      + zone_id       = (known after apply)
+    }
+
+  # aws_security_group.db_access_sg will be created
+  + resource "aws_security_group" "db_access_sg" {
+      + arn                    = (known after apply)
+      + description            = "Allow access to RDS"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "db-access-sg"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name"      = "db-access-sg"
+          + "Terraform" = "true"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_security_group.rds_sg will be created
+  + resource "aws_security_group" "rds_sg" {
+      + arn                    = (known after apply)
+      + description            = "Security Group for RDS"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = []
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = true
+              + to_port          = 0
+            },
+          + {
+              + cidr_blocks      = []
+              + description      = ""
+              + from_port        = 3306
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 3306
+            },
+        ]
+      + name                   = "rds-sg"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name"      = "rds-sg"
+          + "Terraform" = "true"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # random_string.temporary_password will be created
+  + resource "random_string" "temporary_password" {
+      + id          = (known after apply)
+      + length      = 16
+      + lower       = true
+      + min_lower   = 0
+      + min_numeric = 1
+      + min_special = 0
+      + min_upper   = 0
+      + number      = true
+      + result      = (known after apply)
+      + special     = false
+      + upper       = true
+    }
+
+  # template_file.demo-template will be created
+  + resource "template_file" "demo-template" {
+      + id       = (known after apply)
+      + rendered = (known after apply)
+      + template = jsonencode(
+            [
+              + {
+                  + MountPoints  = [
+                      + {
+                          + ContainerPath = "/var/www/html"
+                          + SourceVolume  = "efs-wordpress-data"
+                        },
+                    ]
+                  + command      = []
+                  + cpu          = 10
+                  + entryPoint   = []
+                  + environment  = [
+                      + {
+                          + name  = "WORDPRESS_DB_HOST"
+                          + value = "${db_host}"
+                        },
+                      + {
+                          + name  = "WORDPRESS_DB_USER"
+                          + value = "${db_user}"
+                        },
+                      + {
+                          + name  = "WORDPRESS_DB_PASSWORD"
+                          + value = "${db_password}"
+                        },
+                      + {
+                          + name  = "WORDPRESS_DB_NAME"
+                          + value = "${db_name}"
+                        },
+                    ]
+                  + essential    = true
+                  + image        = "wordpress"
+                  + links        = []
+                  + memory       = 300
+                  + name         = "wordpress-app"
+                  + portMappings = [
+                      + {
+                          + containerPort = 80
+                          + hostPort      = 80
+                          + protocol      = "tcp"
+                        },
+                    ]
+                },
+            ]
+        )
+      + vars     = (known after apply)
+    }
+
+  # module.vpc_community.aws_eip.nat[0] will be created
+  + resource "aws_eip" "nat" {
+      + allocation_id     = (known after apply)
+      + association_id    = (known after apply)
+      + customer_owned_ip = (known after apply)
+      + domain            = (known after apply)
+      + id                = (known after apply)
+      + instance          = (known after apply)
+      + network_interface = (known after apply)
+      + private_dns       = (known after apply)
+      + private_ip        = (known after apply)
+      + public_dns        = (known after apply)
+      + public_ip         = (known after apply)
+      + public_ipv4_pool  = (known after apply)
+      + tags              = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc               = true
+    }
+
+  # module.vpc_community.aws_internet_gateway.this[0] will be created
+  + resource "aws_internet_gateway" "this" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # module.vpc_community.aws_nat_gateway.this[0] will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id        = (known after apply)
+      + id                   = (known after apply)
+      + network_interface_id = (known after apply)
+      + private_ip           = (known after apply)
+      + public_ip            = (known after apply)
+      + subnet_id            = (known after apply)
+      + tags                 = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+    }
+
+  # module.vpc_community.aws_route.private_nat_gateway[0] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block     = "0.0.0.0/0"
+      + destination_prefix_list_id = (known after apply)
+      + egress_only_gateway_id     = (known after apply)
+      + gateway_id                 = (known after apply)
+      + id                         = (known after apply)
+      + instance_id                = (known after apply)
+      + instance_owner_id          = (known after apply)
+      + nat_gateway_id             = (known after apply)
+      + network_interface_id       = (known after apply)
+      + origin                     = (known after apply)
+      + route_table_id             = (known after apply)
+      + state                      = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc_community.aws_route.public_internet_gateway[0] will be created
+  + resource "aws_route" "public_internet_gateway" {
+      + destination_cidr_block     = "0.0.0.0/0"
+      + destination_prefix_list_id = (known after apply)
+      + egress_only_gateway_id     = (known after apply)
+      + gateway_id                 = (known after apply)
+      + id                         = (known after apply)
+      + instance_id                = (known after apply)
+      + instance_owner_id          = (known after apply)
+      + nat_gateway_id             = (known after apply)
+      + network_interface_id       = (known after apply)
+      + origin                     = (known after apply)
+      + route_table_id             = (known after apply)
+      + state                      = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc_community.aws_route_table.private[0] will be created
+  + resource "aws_route_table" "private" {
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table.public[0] will be created
+  + resource "aws_route_table" "public" {
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.private[0] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.private[1] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.private[2] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.public[0] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.public[1] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_route_table_association.public[2] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.private[0] will be created
+  + resource "aws_subnet" "private" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1a"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.4.0/22"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.private[1] will be created
+  + resource "aws_subnet" "private" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1b"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.8.0/22"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.private[2] will be created
+  + resource "aws_subnet" "private" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1c"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.12.0/22"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.public[0] will be created
+  + resource "aws_subnet" "public" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1a"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.0.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = true
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.public[1] will be created
+  + resource "aws_subnet" "public" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1b"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.1.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = true
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_subnet.public[2] will be created
+  + resource "aws_subnet" "public" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1c"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.2.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = true
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc_community.aws_vpc.this[0] will be created
+  + resource "aws_vpc" "this" {
+      + arn                              = (known after apply)
+      + assign_generated_ipv6_cidr_block = false
+      + cidr_block                       = "10.0.0.0/20"
+      + default_network_acl_id           = (known after apply)
+      + default_route_table_id           = (known after apply)
+      + default_security_group_id        = (known after apply)
+      + dhcp_options_id                  = (known after apply)
+      + enable_classiclink               = (known after apply)
+      + enable_classiclink_dns_support   = (known after apply)
+      + enable_dns_hostnames             = false
+      + enable_dns_support               = true
+      + id                               = (known after apply)
+      + instance_tenancy                 = "default"
+      + ipv6_association_id              = (known after apply)
+      + ipv6_cidr_block                  = (known after apply)
+      + main_route_table_id              = (known after apply)
+      + owner_id                         = (known after apply)
+      + tags                             = {
+          + "Name"      = "tigerconnect-vpc"
+          + "Terraform" = "true"
+        }
+    }
+
+Plan: 40 to add, 0 to change, 0 to destroy.
